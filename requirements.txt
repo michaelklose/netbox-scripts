@@ -1,1 +1,1 @@
-pynetbox==5.1.1
+pynetbox==5.3.1
