@@ -50,7 +50,7 @@ with open(OUTPUT_FILE, 'w', encoding="utf8") as csvfile:
                     device_model = yamloutput['model']
                     device_slug = yamloutput['slug']
                     if "part_number" in yamloutput:
-                        device_part_number = yamloutput['part_number']
+                        DEVICE_PART_NUMBER = yamloutput['part_number']
                     else:
                         DEVICE_PART_NUMBER = "not set"
                     if "u_height" in yamloutput:
@@ -89,7 +89,7 @@ with open(OUTPUT_FILE, 'w', encoding="utf8") as csvfile:
                                      'manufacturer': device_manufacturer,
                                      'model': device_model,
                                      'slug': device_slug,
-                                     'part_number': device_part_number,
+                                     'part_number': DEVICE_PART_NUMBER,
                                      'u_height': DEVICE_U_HEIGHT,
                                      'is_full_depth': DEVICE_IS_FULL_DEPTH,
                                      'device_bays': DEVICE_DEVICE_BAYS,
