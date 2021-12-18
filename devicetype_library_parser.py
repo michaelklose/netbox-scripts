@@ -5,7 +5,7 @@ import yaml
 
 
 def get_list_of_files(dir_name):
-    ''' For the given path, get the List of all files in the directory tree '''
+    """For the given path, get the List of all files in the directory tree"""
     # create a list of file and sub directories
     # names in the given directory
     list_of_files = os.listdir(dir_name)
@@ -77,11 +77,9 @@ with open(OUTPUT_FILE, 'w', encoding="utf8") as csvfile:
                     if "interfaces" in yamloutput:
                         DEVICE_INTERFACES = len(yamloutput['interfaces'])
                         for interface in yamloutput['interfaces']:
-                            if "mgmt_only" in interface:
-                                if interface['mgmt_only']:
-                                    del interface['mgmt_only']
-                                    mgmt_interfaces.append(interface)
-                                    # print(interface)
+                            if "mgmt_only" in interface and interface['mgmt_only']:
+                                del interface['mgmt_only']
+                                mgmt_interfaces.append(interface)
                     else:
                         DEVICE_INTERFACES = "not set"
 
