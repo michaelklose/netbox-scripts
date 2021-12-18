@@ -1,13 +1,37 @@
 import csv
 import os
+import pathlib
 import yaml
 
+
+def get_list_of_files(dir_name):
+    ''' For the given path, get the List of all files in the directory tree '''
+    # create a list of file and sub directories
+    # names in the given directory
+    list_of_files = os.listdir(dir_name)
+    all_files = list()
+    # Iterate over all the entries
+    for entry in list_of_files:
+        # Create full path
+        full_path = os.path.join(dir_name, entry)
+        # If entry is a directory then get the list of files in this directory
+        if os.path.isdir(full_path):
+            all_files = all_files + get_list_of_files(full_path)
+        else:
+            all_files.append(full_path)
+    all_files.sort()
+    return all_files
+
+
 # PATH_DEVICETYPE_LIBRARY = "C:\\Git\\devicetype-library\\device-types\\Cisco"
-PATH_DEVICETYPE_LIBRARY = "/Users/mikl/Development/devicetype-library/device-types/Cisco"
+PATH_DEVICETYPE_LIBRARY = "/Users/mikl/Development/devicetype-library"
 OUTPUT_FILE = "devicetypes.csv"
 
+PATH_DEVICETYPE_LIBRARY = os.path.join(PATH_DEVICETYPE_LIBRARY, 'device-types')
+
 with open(OUTPUT_FILE, 'w', encoding="utf8") as csvfile:
-    fieldnames = ['filename', 'model', 'slug', 'part_number', 'u_height', 'is_full_depth', 'device_bays', 'interfaces', 'mgmt_interfaces', 'console_ports', 'power_ports', ]
+    fieldnames = ['folder', 'filename', 'manufacturer', 'model', 'slug', 'part_number', 'u_height', 'is_full_depth',
+                  'device_bays', 'interfaces', 'mgmt_interfaces', 'console_ports', 'power_ports', ]
     writer = csv.DictWriter(csvfile,
                             fieldnames=fieldnames,
                             delimiter=';',
@@ -15,12 +39,14 @@ with open(OUTPUT_FILE, 'w', encoding="utf8") as csvfile:
                             )
     writer.writeheader()
 
-    for file in os.listdir(PATH_DEVICETYPE_LIBRARY):
+    files = get_list_of_files(PATH_DEVICETYPE_LIBRARY)
+    for file in files:
         if file.endswith(('.yml', '.yaml')):
-            with open(PATH_DEVICETYPE_LIBRARY + "/" + file, encoding="utf8") as stream:
+            with open(file, encoding="utf8") as stream:
                 try:
                     yamloutput = yaml.safe_load(stream)
                     # print(yamloutput['model'])
+                    device_manufacturer = yamloutput['manufacturer']
                     device_model = yamloutput['model']
                     device_slug = yamloutput['slug']
                     if "part_number" in yamloutput:
@@ -59,10 +85,13 @@ with open(OUTPUT_FILE, 'w', encoding="utf8") as csvfile:
                     else:
                         DEVICE_INTERFACES = "not set"
 
-                    writer.writerow({'filename': file,
+                    path = pathlib.PurePath(file)
+                    writer.writerow({'folder': path.parent.name,
+                                     'filename': os.path.basename(file),
+                                     'manufacturer': device_manufacturer,
                                      'model': device_model,
                                      'slug': device_slug,
-                                     'part_number': DEVICE_PART_NUMBER,
+                                     'part_number': device_part_number,
                                      'u_height': DEVICE_U_HEIGHT,
                                      'is_full_depth': DEVICE_IS_FULL_DEPTH,
                                      'device_bays': DEVICE_DEVICE_BAYS,
