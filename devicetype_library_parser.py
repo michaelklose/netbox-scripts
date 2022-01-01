@@ -31,7 +31,7 @@ PATH_DEVICETYPE_LIBRARY = os.path.join(PATH_DEVICETYPE_LIBRARY, 'device-types')
 
 with open(OUTPUT_FILE, 'w', encoding="utf8") as csvfile:
     fieldnames = ['folder', 'filename', 'manufacturer', 'model', 'slug', 'part_number', 'u_height', 'is_full_depth',
-                  'device_bays', 'interfaces', 'mgmt_interfaces', 'console_ports', 'power_ports', ]
+                  'device_bays', 'module_bays', 'interfaces', 'mgmt_interfaces', 'console_ports', 'power_ports', 'inventory_items']
     writer = csv.DictWriter(csvfile,
                             fieldnames=fieldnames,
                             delimiter=';',
@@ -62,9 +62,13 @@ with open(OUTPUT_FILE, 'w', encoding="utf8") as csvfile:
                     else:
                         DEVICE_IS_FULL_DEPTH = "not set"
                     if "device-bays" in yamloutput:
-                        DEVICE_DEVICE_BAYS = "yes"
+                        DEVICE_DEVICE_BAYS = yamloutput['device-bays']
                     else:
                         DEVICE_DEVICE_BAYS = "no"
+                    if "module-bays" in yamloutput:
+                        DEVICE_MODULE_BAYS = yamloutput['module-bays']
+                    else:
+                        DEVICE_MODULE_BAYS = "no"
                     if "console-ports" in yamloutput:
                         DEVICE_CONSOLE_PORTS = yamloutput['console-ports']
                     else:
@@ -82,7 +86,10 @@ with open(OUTPUT_FILE, 'w', encoding="utf8") as csvfile:
                                 mgmt_interfaces.append(interface)
                     else:
                         DEVICE_INTERFACES = "not set"
-
+                    if "inventory-items" in yamloutput:
+                        DEVICE_INVENTORY_ITEMS = yamloutput['inventory-items']
+                    else:
+                        DEVICE_INVENTORY_ITEMS = "no"
                     path = pathlib.PurePath(file)
                     writer.writerow({'folder': path.parent.name,
                                      'filename': os.path.basename(file),
@@ -93,10 +100,12 @@ with open(OUTPUT_FILE, 'w', encoding="utf8") as csvfile:
                                      'u_height': DEVICE_U_HEIGHT,
                                      'is_full_depth': DEVICE_IS_FULL_DEPTH,
                                      'device_bays': DEVICE_DEVICE_BAYS,
+                                     'module_bays': DEVICE_MODULE_BAYS,
                                      'interfaces': DEVICE_INTERFACES,
                                      'mgmt_interfaces': mgmt_interfaces,
                                      'console_ports': DEVICE_CONSOLE_PORTS,
-                                     'power_ports': DEVICE_POWER_PORTS
+                                     'power_ports': DEVICE_POWER_PORTS,
+                                     'inventory_items': DEVICE_INVENTORY_ITEMS
 
                                      })
                 except yaml.YAMLError as exc:
