@@ -24,14 +24,14 @@ def get_list_of_files(dir_name):
 
 
 # PATH_DEVICETYPE_LIBRARY = "C:\\Git\\devicetype-library\\device-types\\Cisco"
-PATH_DEVICETYPE_LIBRARY = "/Users/mikl/Development/devicetype-library"
+PATH_DEVICETYPE_LIBRARY = "/home/mikl/Dev/devicetype-library"
 OUTPUT_FILE = "devicetypes.csv"
 
 PATH_DEVICETYPE_LIBRARY = os.path.join(PATH_DEVICETYPE_LIBRARY, 'device-types')
 
 with open(OUTPUT_FILE, 'w', encoding="utf8") as csvfile:
     fieldnames = ['folder', 'filename', 'manufacturer', 'model', 'slug', 'part_number', 'u_height', 'is_full_depth',
-                  'device_bays', 'module_bays', 'interfaces', 'mgmt_interfaces', 'console_ports', 'power_ports', 'inventory_items']
+                  'airflow', 'device_bays', 'module_bays', 'interfaces', 'mgmt_interfaces', 'console_ports', 'power_ports', 'inventory_items']
     writer = csv.DictWriter(csvfile,
                             fieldnames=fieldnames,
                             delimiter=';',
@@ -61,6 +61,10 @@ with open(OUTPUT_FILE, 'w', encoding="utf8") as csvfile:
                         DEVICE_IS_FULL_DEPTH = yamloutput['is_full_depth']
                     else:
                         DEVICE_IS_FULL_DEPTH = "not set"
+                    if "airflow" in yamloutput:
+                        DEVICE_AIRFLOW = yamloutput['airflow']
+                    else:
+                        DEVICE_AIRFLOW = "not set"
                     if "device-bays" in yamloutput:
                         DEVICE_DEVICE_BAYS = yamloutput['device-bays']
                     else:
@@ -99,6 +103,7 @@ with open(OUTPUT_FILE, 'w', encoding="utf8") as csvfile:
                                      'part_number': DEVICE_PART_NUMBER,
                                      'u_height': DEVICE_U_HEIGHT,
                                      'is_full_depth': DEVICE_IS_FULL_DEPTH,
+                                     'airflow': DEVICE_AIRFLOW,
                                      'device_bays': DEVICE_DEVICE_BAYS,
                                      'module_bays': DEVICE_MODULE_BAYS,
                                      'interfaces': DEVICE_INTERFACES,
